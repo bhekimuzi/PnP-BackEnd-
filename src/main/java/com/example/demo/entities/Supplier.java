@@ -10,8 +10,11 @@ public class Supplier extends Person implements Serializable{
 	private String companyName;
 	private int productId;
 	
-	public Supplier(String companyName,int productId,long id,String email, String name,String surname,String username,String password,String role,String cellNumber,String city,String streetAddress,String suburb,String postalCode,String province) {
-}
+	public Supplier(String companyName,int productId,long id,String email, String name,String surname,Address address,Login login) {
+		super(id,name,surname,address,login);
+		this.companyName = companyName;
+		this.productId = productId;
+	}
 
 	public Supplier() {
 	

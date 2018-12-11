@@ -82,6 +82,7 @@ import com.example.demo.service.PaymentService;
 import com.example.demo.service.ProductService;
 import com.example.demo.service.RecipeService;
 import com.example.demo.service.StoreManagerService;
+import com.example.demo.service.SupplierService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -120,6 +121,8 @@ public class Controller {
 	private RecipeService recipeService;
 	@Autowired
 	private CompetitionService competitionService;
+	@Autowired
+	private SupplierService supplierService;
 	
 	 
 
@@ -314,7 +317,17 @@ public List<Product> sort() {
 		return aisleService.getById(aisleId);
 	}
 	
+	@GetMapping("RevomeCart")
+	public List<Product> remove(){
+		 basket.getAll().clear();
+		 return basket.getAll();
+	}
+	
 	//POST MAPPING
+	@PostMapping("Supplier")
+	public void saveSupplier(@RequestBody Supplier supplier) {
+		supplierService.save(supplier);
+	}
 	
 	//This method will save Aisle
 	@PostMapping("Aisle")
@@ -595,7 +608,7 @@ public List<Product> sort() {
 	//This method will product to cart
 	@PostMapping("/AddToCart/")
 	public int addToCart(@RequestBody Product product) {
-
+		
 		basket.addProduct(product);
 
 		return basket.getAll().size();
@@ -765,8 +778,8 @@ public List<Product> sort() {
 	}
 	//After every payment this method will update store quantity
 	@PutMapping("StoreQuantity")
-	public void updateStoreQuantity() {
-		List<Product> myList =basket.getAll();
+	public String updateStoreQuantity(@RequestBody List<Product> cart) {
+		List<Product> myList =cart;
 		for(int i=0;i<myList.size();i++) {
 			Product newObj =productService.getProduct(myList.get(i).getProductId());
 			int quantity =myList.get(i).getQuantity();
@@ -775,5 +788,14 @@ public List<Product> sort() {
 			newObj.setStoreQuantity(storeQuantity);
 			productService.update(newObj);
 		}
+		return "updated";
+		
+	}
+	@PutMapping("Supply")
+	public void supply(@RequestBody Product product)
+	{
+		Product newObj =productService.getProduct(product.getProductId());
+		newObj.setStoreQuantity(product.getStoreQuantity());
+		productService.update(newObj);
 	}
 }
