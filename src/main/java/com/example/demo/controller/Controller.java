@@ -259,8 +259,9 @@ public List<Product> sort() {
 	public List<Competition> getAllCompetition(){
 		return competitionService.getAllFind();
 	}
+	
 	//This method will a specific competition by Id
-	@GetMapping("GetById")
+	@GetMapping("GetById/{competitionId}")
 	public Competition getById(@PathVariable long competitionId){
 		return competitionService.getById(competitionId);
 	}
