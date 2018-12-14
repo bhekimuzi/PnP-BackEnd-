@@ -360,6 +360,7 @@ public List<Product> sort() {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			message = "Aisle Not Added";
 		}
 
 		return message;
@@ -374,9 +375,9 @@ public List<Product> sort() {
 	}
 	//This method will save Recipe
 	@PostMapping("Recipe")
-	public void saveRecipe(@RequestBody Recipe recipe) throws IOException   {
+	public String saveRecipe(@RequestBody Recipe recipe) throws IOException   {
 
-		
+		String message = "";
 		
 			String file = "app/menu/img/";
 			
@@ -436,19 +437,20 @@ public List<Product> sort() {
 			recipeService.save(new HashSet<Recipe>() {
 				{
 					add(recipe);
-
+					
 				}
+				
 			});
 
 		
 
-		
+		return message = "Aisle Added";
 		
 	}
 	//This method will save Competition
 	@PostMapping("Competition")
-	public void saveCompetition(@RequestBody Competition competition) throws IOException {
-		
+	public String saveCompetition(@RequestBody Competition competition) throws IOException {
+		String message = "";
 		String file = "app/menu/img/";
 		
 		String rimage = competition.getPhoto().substring(12);
@@ -509,6 +511,8 @@ public List<Product> sort() {
 
 			}
 		});
+		
+		return message = "Aisle Added";
 
 	}
 
@@ -606,6 +610,18 @@ public List<Product> sort() {
 		mailSender.send(message);
 
 	}
+	
+	//This method will send your login details
+	@PostMapping("reset")
+	public void reset(@RequestBody Person person) {
+		SimpleMailMessage registrationEmail = new SimpleMailMessage();
+		registrationEmail.setTo(person.getLogin().getEmail());
+		registrationEmail.setSubject("Forget Password");
+		registrationEmail.setText("Username/Email: "+person.getLogin().getEmail()+"\n"+"Passowrd:"+person.getLogin().getPassword());
+		registrationEmail.setFrom("noreply@domain.com");
+
+		emailService.sendEmail(registrationEmail);
+	}
 	//This method will product to cart
 	@PostMapping("/AddToCart/")
 	public int addToCart(@RequestBody Product product) {
@@ -618,8 +634,8 @@ public List<Product> sort() {
 	
 	//This method will save category
 	@PostMapping("/Category/{aisleId}")
-	public void addCategory(@PathVariable long aisleId, @RequestBody Category category) {
-
+	public String addCategory(@PathVariable long aisleId, @RequestBody Category category) {
+		String message = "";
 		try {
 			String file = "app/menu/img/";
 			String image = category.getImage().substring(12);
@@ -632,10 +648,13 @@ public List<Product> sort() {
 			Aisle aisle = aisleService.getById(aisleId);
 			category.setAisle(aisle);
 			categoryService.saveCategory(category);
+			message = "Category Added";
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			message = "Not Added";
 		}
+		return message;
 
 	}
 	//This method will save product
